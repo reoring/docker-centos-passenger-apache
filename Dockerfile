@@ -2,7 +2,7 @@ FROM centos:7.2.1511
 
 RUN yum -y update
 # RUN yum -y groupinstall "Development Tools"
-RUN rpm --rebuilddb && yum install -y gcc make gcc-c++ wget perl readline readline-devel zlib zlib-devel curl curl-devel tk-devel openssl-devel gdbm-devel bison git which tar postgresql-contrib postgresql-devel
+RUN rpm --rebuilddb && yum install -y bzip2 gcc make gcc-c++ wget perl readline readline-devel zlib zlib-devel curl curl-devel tk-devel openssl-devel gdbm-devel bison git which tar postgresql-contrib postgresql-devel
 
 # Install epel
 RUN sed -i '0,/enabled=.*/{s/enabled=.*/enabled=1/}' /etc/yum.repos.d/CentOS-Base.repo
