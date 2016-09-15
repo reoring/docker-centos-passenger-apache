@@ -1,7 +1,7 @@
 FROM centos:7.2.1511
 
 RUN yum -y update
-RUN yum -y groupinstall "Development Tools"
+# RUN yum -y groupinstall "Development Tools"
 RUN yum install -y gcc make gcc-c++ wget perl readline readline-devel zlib zlib-devel curl curl-devel tk-devel openssl-devel gdbm-devel bison git which tar postgresql-contrib postgresql-devel
 
 # Install epel
