@@ -9,21 +9,15 @@ RUN sed -i '0,/enabled=.*/{s/enabled=.*/enabled=1/}' /etc/yum.repos.d/CentOS-Bas
 RUN wget http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-8.noarch.rpm && rpm -ivh epel-release-7-8.noarch.rpm
 RUN yum update -y
 
-# Install rbenv and ruby-build
-RUN git clone https://github.com/sstephenson/rbenv.git /root/.rbenv
-RUN git clone https://github.com/sstephenson/ruby-build.git /root/.rbenv/plugins/ruby-build
-RUN /root/.rbenv/plugins/ruby-build/install.sh
-ENV PATH /root/.rbenv/bin:$PATH
-RUN echo 'eval "$(rbenv init -)"' >> /etc/profile.d/rbenv.sh # or /etc/profile
-RUN echo 'eval "$(rbenv init -)"' >> .bashrc
-# Install multiple versions of ruby
-ENV CONFIGURE_OPTS --disable-install-doc
-ADD ./versions.txt /root/versions.txt
-RUN xargs -L 1 rbenv install < /root/versions.txt
+# Install Ruby
+ADD ruby-2.3.1.tar.gz /usr/local/src
+RUN cd /usr/local/src/ruby-2.3.1 && ./configure --prefix=/usr/local --enable-shared --disable-install-doc --with-opt-dir=/usr/local/lib && make -j8 && make install
+ADD rubygems-2.6.6.tgz /usr/local/src
+RUN cd /usr/local/src/rubygems-2.6.6  && ruby setup.rb
 
 # Install Bundler for each version of ruby
 RUN echo 'gem: --no-rdoc --no-ri' >> /.gemrc
-RUN bash -l -c 'for v in $(cat /root/versions.txt); do rbenv global $v; gem install bundler rails pg therubyracer passenger; done'
+RUN bash -l -c 'gem install bundler rails pg therubyracer passenger'
 
 # LibYAML
 ADD yaml-0.1.7.tar.gz /usr/local/src
